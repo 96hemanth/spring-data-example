@@ -17,11 +17,14 @@ package org.springframework.data.mongodb.repository.support;
 
 import static org.springframework.data.mongodb.core.query.Criteria.*;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.mongodb.MongoClient;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -38,6 +41,14 @@ import org.springframework.data.util.StreamUtils;
 import org.springframework.data.util.Streamable;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
+import com.fasterxml.jackson.core.JsonParseException;
+
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import java.util.LinkedHashMap;
 
 /**
  * Repository base implementation for Mongo.
@@ -49,8 +60,12 @@ import org.springframework.util.Assert;
  */
 public class SimpleMongoRepository<T, ID> implements MongoRepository<T, ID> {
 
-	private final MongoOperations mongoOperations;
+	private  MongoOperations mongoOperations;
 	private final MongoEntityInformation<T, ID> entityInformation;
+
+	private final String SUBDOMAIN_NAME = "polyglotSubdomainName";
+	private final String STRUCTURE_NAME = "polyglotStructureName";
+	private final String TENANT_ID = "tenantId";
 
 	/**
 	 * Creates a new {@link SimpleMongoRepository} for the given {@link MongoEntityInformation} and {@link MongoTemplate}.
@@ -59,7 +74,8 @@ public class SimpleMongoRepository<T, ID> implements MongoRepository<T, ID> {
 	 * @param mongoOperations must not be {@literal null}.
 	 */
 	public SimpleMongoRepository(MongoEntityInformation<T, ID> metadata, MongoOperations mongoOperations) {
-
+		//String className = metadata.getJavaType().name;
+		//mongoOperations.getCollectionName(metadata.getJavaType());
 		Assert.notNull(metadata, "MongoEntityInformation must not be null!");
 		Assert.notNull(mongoOperations, "MongoOperations must not be null!");
 
@@ -75,9 +91,11 @@ public class SimpleMongoRepository<T, ID> implements MongoRepository<T, ID> {
 	public <S extends T> S save(S entity) {
 
 		Assert.notNull(entity, "Entity must not be null!");
+		Map<String,Object> payloadMap = getMapObject(getJSONString(entity));
+		this.mongoOperations = new MongoTemplate(new MongoClient("localhost:27017"),getSubDomain(payloadMap));
 
 		if (entityInformation.isNew(entity)) {
-			mongoOperations.insert(entity, entityInformation.getCollectionName());
+			mongoOperations.insert(entity, (String)payloadMap.get(STRUCTURE_NAME));
 		} else {
 			mongoOperations.save(entity, entityInformation.getCollectionName());
 		}
@@ -363,5 +381,48 @@ public class SimpleMongoRepository<T, ID> implements MongoRepository<T, ID> {
 		}
 
 		return mongoOperations.find(query, entityInformation.getJavaType(), entityInformation.getCollectionName());
+	}
+
+	private <S> String tenatToken(S entity){
+
+		String json = getJSONString(entity);
+		Map<String, Object> requestMap = getMapObject(json);
+		return null;
+	}
+
+	public static String getJSONString(Object object){
+
+		String jsonString = null;
+		ObjectMapper objMapper = new ObjectMapper();
+		try {
+			jsonString = objMapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);
+
+		} catch (Exception e){
+			e.printStackTrace();
+		}
+
+		return jsonString;
+	}
+
+	public static Map<String,Object> getMapObject(String value){
+
+		Map<String,Object> persistenceDataMap = null;
+		ObjectMapper objMapper = new ObjectMapper();
+		objMapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
+		objMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+		objMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+		try {
+			persistenceDataMap = objMapper.readValue(value, LinkedHashMap.class);
+		} catch (Exception e){
+			e.printStackTrace();
+		}
+
+
+		return persistenceDataMap;
+	}
+
+	private String getSubDomain(Map<String,Object> payloadMap){
+		return (String)payloadMap.get(TENANT_ID)+"_"+(String)payloadMap.get(SUBDOMAIN_NAME);
 	}
 }
