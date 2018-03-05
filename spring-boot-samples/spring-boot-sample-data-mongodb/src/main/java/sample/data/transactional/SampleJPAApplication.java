@@ -22,22 +22,22 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-@EnableJpaRepositories(basePackageClasses=Employee.class)
+//@EnableJpaRepositories(basePackageClasses=Employee.class)
 @SpringBootApplication
-public class SampleJPAApplication implements CommandLineRunner {
-	@Autowired
-	EmployeeRepository empRepository;
-
-	@Override
-	public void run(String... args) throws Exception {
-
-
-		empRepository.save(new Employee("Hemanth", "Kumar"));
-		System.out.println("Done");
-	}
-
-	public static void main(String[] args) {
-		SpringApplication.run(SampleJPAApplication.class, args);
-	}
+public class SampleJPAApplication  {
+//	@Autowired
+//	EmployeeRepository empRepository;
+//
+//	@Override
+//	public void run(String... args) throws Exception {
+//
+//
+//		empRepository.save(new Employee("Hemanth", "Kumar"));
+//		System.out.println("Done");
+//	}
+//
+//	public static void main(String[] args) {
+//		SpringApplication.run(SampleJPAApplication.class, args);
+//	}
 
 }

@@ -26,6 +26,9 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 import sample.data.transactional.Employee;
 import sample.data.transactional.EmployeeRepository;
 
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+
 @ComponentScan(basePackages ={"sample.data"})
 @EnableMongoRepositories(basePackageClasses=Customer.class)
 @EnableJpaRepositories(basePackageClasses=Employee.class)
