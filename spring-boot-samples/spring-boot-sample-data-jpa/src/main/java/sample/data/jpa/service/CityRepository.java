@@ -30,5 +30,6 @@ interface CityRepository extends Repository<City, Long> {
 			String country, Pageable pageable);
 
 	City findByNameAndCountryAllIgnoringCase(String name, String country);
+	void save(City obj);
 
 }

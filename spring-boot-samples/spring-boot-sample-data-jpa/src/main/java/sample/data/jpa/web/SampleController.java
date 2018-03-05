@@ -32,8 +32,10 @@ public class SampleController {
 
 	@GetMapping("/")
 	@ResponseBody
-	@Transactional(readOnly = true)
+	//@Transactional(readOnly = true)
 	public String helloWorld() {
+
+		this.cityService.save();
 		return this.cityService.getCity("Bath", "UK").getName();
 	}
 

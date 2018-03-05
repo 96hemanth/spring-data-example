@@ -20,22 +20,35 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+import sample.data.transactional.Employee;
+import sample.data.transactional.EmployeeRepository;
 
+@ComponentScan(basePackages ={"sample.data"})
+@EnableMongoRepositories(basePackageClasses=Customer.class)
+@EnableJpaRepositories(basePackageClasses=Employee.class)
 @SpringBootApplication
-public class SampleMongoApplication implements CommandLineRunner {
+public class SampleSpringDataApplication implements CommandLineRunner {
 
 	@Autowired
 	private CustomerRepository repository;
 	@Autowired
 	private OwnerRepository repo;
 
+	@Autowired
+	EmployeeRepository empRepository;
 	@Override
 	public void run(String... args) throws Exception {
 		this.repository.deleteAll();
-		this.repo.deleteAll();
-
+		//this.repo.deleteAll();
+		empRepository.deleteAll();
+		empRepository.save(new Employee("Hemanth", "Kumar"));
+		System.out.println("Done");
 		// save a couple of customers
 		this.repository.save(new Customer("Hemanth", "Kumar",96, "system"));
+
 		//this.repository.save(new Customer("Bob", "Smith",26,"tenant1"));
 		//this.repo.save(new Owner("DeltaVerge", "BPS",2));
 
@@ -63,7 +76,7 @@ public class SampleMongoApplication implements CommandLineRunner {
 	}
 
 	public static void main(String[] args) {
-		SpringApplication.run(SampleMongoApplication.class, args);
+		SpringApplication.run(SampleSpringDataApplication.class, args);
 	}
 
 }

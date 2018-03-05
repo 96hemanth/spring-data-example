@@ -24,21 +24,21 @@ import org.springframework.boot.test.rule.OutputCapture;
 import org.springframework.test.context.junit4.SpringRunner;
 
 /**
- * Tests for {@link SampleMongoApplication}.
+ * Tests for {@link SampleSpringDataApplication}.
  *
  * @author Dave Syer
  * @author Andy Wilkinson
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class SampleMongoApplicationTests {
+public class SampleJPAApplicationTests {
 
 	@ClassRule
 	public static OutputCapture outputCapture = new OutputCapture();
 
 	@Test
 	public void testDefaultSettings() {
-		String output = SampleMongoApplicationTests.outputCapture.toString();
+		String output = SampleJPAApplicationTests.outputCapture.toString();
 		//assertThat(output).contains("firstName='Alice', lastName='Smith', ");
 	}
 
