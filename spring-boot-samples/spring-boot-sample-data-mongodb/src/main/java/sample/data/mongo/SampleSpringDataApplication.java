@@ -16,6 +16,8 @@
 
 package sample.data.mongo;
 
+import org.hibernate.SessionBuilder;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -26,6 +28,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 import sample.data.transactional.Employee;
 import sample.data.transactional.EmployeeRepository;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
@@ -45,9 +48,17 @@ public class SampleSpringDataApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		this.repository.deleteAll();
-		//this.repo.deleteAll();
+		Employee emp = new Employee("Hemanth", "Kumar");
 		empRepository.deleteAll();
-		empRepository.save(new Employee("Hemanth", "Kumar"));
+		//this.repo.deleteAll();
+//		EntityManager entityManager = Persistence.createEntityManagerFactory("employeeEntity").createEntityManager();
+//
+//		entityManager.getTransaction().begin();
+//		entityManager.persist(new Employee("Dhivakar", "Kumar"));
+//		entityManager.flush();
+//		entityManager.getTransaction().commit();
+
+		empRepository.save(emp);
 		System.out.println("Done");
 		// save a couple of customers
 		this.repository.save(new Customer("Hemanth", "Kumar",96, "system"));
