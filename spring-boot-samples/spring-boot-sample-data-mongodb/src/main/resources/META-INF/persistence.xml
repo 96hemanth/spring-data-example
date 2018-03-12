@@ -13,7 +13,8 @@
 			<property name="hibernate.connection.url" value="jdbc:postgresql://localhost/alluvius" />
 			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
 			<property name="hibernate.hbm2ddl.auto" value="update" />
-			<!--<property name="hibernate.default_schema" value="private" />-->
+			<property name="hibernate.default_schema" value="tenantb" />
+			<!--<property name="javax.persistence.schema-generation.database.action" value="create" />-->
 			<!--<property name="spring.datasource.driverClassName" value="org.postgresql.Driver" />-->
 			<!--<property name="spring.jpa.database-platform" value="org.hibernate.dialect.PostgreSQLDialect" />-->
 			<!--<property name="spring.datasource.url" value="jdbc:postgresql://localhost/postgres" />-->

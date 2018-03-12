@@ -18,12 +18,32 @@ public class Employee implements Serializable {
 	@Column(name = "lastname")
 	private String lastName;
 
+	@Column(name="tenant_id")
+	private String tenantId;
+
 	protected Employee() {
 	}
 
-	public Employee(String firstName, String lastName) {
+	public Employee(String firstName, String lastName, String tenantId) {
 		this.firstName = firstName;
 		this.lastName = lastName;
+		this.tenantId = tenantId;
+	}
+
+	public long getId() {
+		return id;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public String getTenantId() {
+		return tenantId;
 	}
 
 	@Override
